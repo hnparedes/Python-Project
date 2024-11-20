@@ -1,7 +1,8 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
 def main():
     # Import necessary libraries
-    import numpy as np
-    import matplotlib.pyplot as plt
 
     # Define the parameters for the sine wave
     frequency_modifier = 2  # Frequency modifier for the sine wave
