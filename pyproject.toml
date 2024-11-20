@@ -20,7 +20,7 @@ authors = [
   { name="Jayden Lopez" },
 ]
 description = "Scientific Python Interactive Data Acoustic Modeling "
-readme = "README.rst"
+readme = "README.md"
 requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Python :: 3",
