@@ -5,5 +5,5 @@ This project provides a graphical tool to load audio files, convert formats, cle
 To install dependencies, run:
 ```shell
 pip install -r requirements.txt
-
+```
 Sphinx still isn't setup
