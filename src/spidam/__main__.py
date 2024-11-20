@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+from model import Model
+
 if __name__=="__main__":
 	#Model
 	model = Model()
