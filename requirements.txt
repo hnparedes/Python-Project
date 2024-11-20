@@ -1,4 +1,7 @@
 numpy
 matplotlib
-ffmpeg-python
-hatchling
+scipy
+pandas
+librosa
+soundfile
+tkinter
