@@ -1,6 +1,6 @@
 import os
 import logging
-import tempfile
+import typing
 
 import ffmpeg
 
@@ -22,14 +22,8 @@ import ffmpeg
 class Model:
     def __init__(self) -> None:
         self._filepath: str = None
-        self._tempdir: tempfile.TemporaryDirectory = None
 
-    def load_audio(self, filepath: str) -> None:
-        """ Load and clean the audio file
-
-        Args:
-            file_path (str): File path to audio file
-        """        
+    def load_audio(self, filepath: str, output_directory: typing.Optional[str] = None) -> None: 
         # Ensure the file exists
         if not os.path.isfile(filepath):
             logging.critical(f"File {filepath} does not exist")
@@ -41,30 +35,23 @@ class Model:
             self._filepath = filepath
         else:
             # Convert into a .wav file and store in a temporary directory
-            self._convert_to_wav(filepath)
+            self._convert_to_wav(filepath, output_directory)
 
     def visualize_waveform(self):
         """ Plot the waveform
         """        
         pass
-    def _convert_to_wav(self, filepath: str) -> None:
-        """ Convert the audio file into a .wav file and store in the temporary directory
+    def _convert_to_wav(self, filepath: str, output_directory: typing.Optional[str]) -> None:    
+        # If the output directory is not set, then use the current working directory
+        directory: str = output_directory if output_directory else os.getcwd()
 
-        Args:
-            filepath (str): Audio file to convert
-        """        
-        # Create a temporary directory to store .wav
-        self._tempdir = tempfile.TemporaryDirectory(delete=False)
-        logging.info("Created temporary directory")
+        # Get the filename without the extension and make the output filepath
+        basename: str = os.path.basename(filepath)
+        filename: str = os.path.splitext(basename)[0] + '.wav'
+        output_filepath: str = os.path.join(directory, filename)
 
-        # Load the file into ffmpeg and store into the temporary directory
-        basename: str = os.path.splitext(filepath)[0]
-        output_filepath: str = f"{self._tempdir}/{output_filepath}.wav"
+        # Load the audiofile and convert into .wav
         ffmpeg.input(filepath).output(output_filepath).run()
-        logging.info("Converted audio file into .wav")
-
-        # Set the stored filepath
-        self._filepath = output_filepath
 
     def _clean_audio_data(self):
         """ Check and handle meta and multi-channel data
@@ -73,10 +60,6 @@ class Model:
         pass
     def _highest_resonance(self):
         pass
-
-    def __del__(self):
-        if self._tempdir:
-            self._tempdir.cleanup()
         
     @property
     def filepath(self) -> str:
