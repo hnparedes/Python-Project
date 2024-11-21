@@ -4,21 +4,6 @@ import typing
 
 import ffmpeg
 
-# class AudioModel:
-
-#   def __init__(self):
-#   self audio_data, sample_rate, and filename here
-
-#   def convert_to_wav(self, file_path):
-#   Conversion code here
-
-#   def calculate_rt60(self):
-#   Apply calculations to determine RT60
-
-#   def highest_resonance(self):
-#   Find the peak frequency
-#   Returns highest peak or frequency details here
-
 class Model:
     def __init__(self) -> None:
         self._filepath: str = None
