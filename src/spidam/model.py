@@ -52,6 +52,7 @@ class Model:
 
         # Load the audiofile and convert into .wav
         ffmpeg.input(filepath).output(output_filepath).run()
+        logging.info("Converted to .wav at {output_filepath}")
 
     def _clean_audio_data(self):
         """ Check and handle meta and multi-channel data
