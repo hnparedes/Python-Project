@@ -42,9 +42,9 @@ class Model:
     def _clean_audio_data(self):
         """ Check and handle meta and multi-channel data
         """        
-    def _calculate_rt60(self):
+    def calculate_rt60(self):
         pass
-    def _highest_resonance(self):
+    def highest_resonance(self):
         pass
         
     @property

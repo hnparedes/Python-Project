@@ -51,7 +51,7 @@ class View:
         wavfile = StringVar()
         TEMPFILENAME = None
         if TEMPFILENAME != None:
-            wavfile.set('File Name: ' + self.model._filepath)
+            wavfile.set('File Name: ' + self.model.filepath)
         else:
             wavfile.set('File Name: ')
         self.filelabel= tkinter.ttk.Frame(self.mainframe, padding='5 5 5 5')
@@ -105,8 +105,8 @@ class View:
         #Resonant Frequency Label
         #This will work so long as the _highest_resonance() function is return str(frequency)
         resonance = StringVar()
-        if self.model._highest_resonance() != None:
-            resonance.set('Resonant Frequency: ' + str(self.model._highest_resonance())+' Hz')
+        if self.modelhighest_resonance() != None:
+            resonance.set('Resonant Frequency: ' + str(self.model.highest_resonance())+' Hz')
         else:
             resonance.set('Resonant Frequency: ')
         self.frequencylabel = tkinter.ttk.Frame(self.mainframe, padding='5 5 5 5')
@@ -117,8 +117,8 @@ class View:
         #RT60 Difference Label
         #This will work so long as the _calculate_rt60() function is return str(frequency)
         rt60 = StringVar()
-        if self.model._calculate_rt60() != None:
-            rt60.set('Difference: ' + str(self.model._calculate_rt60() + 's'))
+        if self.modelcalculate_rt60() != None:
+            rt60.set('Difference: ' + str(self.model.calculate_rt60() + 's'))
         else:
             rt60.set('Difference: ')
         self.rt60difference = tkinter.ttk.Frame(self.mainframe, padding='5 5 5 5')
