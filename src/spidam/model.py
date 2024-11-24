@@ -3,11 +3,15 @@ import logging
 import typing
 
 import ffmpeg
+import scipy
+import numpy as np
 
 class Model:
     def __init__(self) -> None:
         self._filepath: str = None
-
+        self._audio: np.ndarray = None
+        self._sample_rate: int = None
+ 
     def load_audio(self, filepath: str, output_directory: typing.Optional[str] = None) -> None: 
         # Ensure the file exists
         if not os.path.isfile(filepath):
@@ -36,15 +40,12 @@ class Model:
         output_filepath: str = os.path.join(directory, filename)
 
         # Load the audiofile and convert into .wav
-        ffmpeg.input(filepath).output(output_filepath).run()
+        ffmpeg.input(filepath).output(output_filepath, ac=1, f='wav').run()
         logging.info("Converted to .wav at {output_filepath}")
 
-    def _clean_audio_data(self):
-        """ Check and handle meta and multi-channel data
-        """        
-    def calculate_rt60(self):
+    def calculate_rt60(self) -> int:
         pass
-    def highest_resonance(self):
+    def highest_resonance(self) -> int:
         pass
         
     @property
@@ -56,4 +57,13 @@ class Model:
         """    
 
         return self._filepath
+    
+    @property
+    def sample_rate(self) -> int:
+        """ Sample rate of the audio file
+
+        Returns:
+            int: Sample Rate
+        """
+        return self._sample_rate
     
