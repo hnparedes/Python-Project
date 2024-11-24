@@ -105,7 +105,7 @@ class View:
         #Resonant Frequency Label
         #This will work so long as the _highest_resonance() function is return str(frequency)
         resonance = StringVar()
-        if self.modelhighest_resonance() != None:
+        if self.model.highest_resonance() != None:
             resonance.set('Resonant Frequency: ' + str(self.model.highest_resonance())+' Hz')
         else:
             resonance.set('Resonant Frequency: ')
@@ -117,7 +117,7 @@ class View:
         #RT60 Difference Label
         #This will work so long as the _calculate_rt60() function is return str(frequency)
         rt60 = StringVar()
-        if self.modelcalculate_rt60() != None:
+        if self.model.calculate_rt60() != None:
             rt60.set('Difference: ' + str(self.model.calculate_rt60() + 's'))
         else:
             rt60.set('Difference: ')
