@@ -3,7 +3,8 @@ import logging
 import typing
 
 import ffmpeg
-import scipy
+import scipy.io
+import scipy.signal
 import numpy as np
 
 class Model:
@@ -11,6 +12,8 @@ class Model:
         self._filepath: str = None
         self._audio: np.ndarray = None
         self._sample_rate: int = None
+        self._frequencies: np.ndarray = None
+        self._pxx: np.ndarray = None
  
     def load_audio(self, filepath: str, output_directory: typing.Optional[str] = None) -> None: 
         # Ensure the file exists
@@ -25,6 +28,10 @@ class Model:
         else:
             # Convert into a .wav file and store in a temporary directory
             self._convert_to_wav(filepath, output_directory)
+
+        # Get sample rate, data, frequencies, and pxx values
+        self._sample_rate, self._audio = scipy.io.wavfile.read(self._filepath)
+        self._frequencies, self._pxx = scipy.signal.welch(self._audio, self._sample_rate)
 
     def visualize_waveform(self):
         """ Plot the waveform
@@ -41,12 +48,14 @@ class Model:
 
         # Load the audiofile and convert into .wav
         ffmpeg.input(filepath).output(output_filepath, ac=1, f='wav').run()
+        self._filepath = output_filepath
         logging.info("Converted to .wav at {output_filepath}")
 
     def calculate_rt60(self) -> int:
         pass
+
     def highest_resonance(self) -> int:
-        pass
+        return self._frequencies[np.argmax(self._pxx)]
         
     @property
     def filepath(self) -> str:
