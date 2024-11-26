@@ -1,7 +1,7 @@
 import os
 import logging
-import typing
 import functools
+from typing import Tuple, Optional
 
 import ffmpeg
 import scipy.io
@@ -18,7 +18,7 @@ class Model:
         self._pxx: NDArray = None
         self._duration: int = None
  
-    def load_audio(self, filepath: str, output_directory: typing.Optional[str] = None) -> None: 
+    def load_audio(self, filepath: str, output_directory: Optional[str] = None) -> None: 
         # Ensure the file exists
         if not os.path.isfile(filepath):
             logging.critical(f"File {filepath} does not exist")
@@ -39,7 +39,7 @@ class Model:
         # Calculate the duration of the wav file
         self._duration = len(self._audio) / self._sample_rate
 
-    def _convert_to_wav(self, filepath: str, output_directory: typing.Optional[str]) -> None:    
+    def _convert_to_wav(self, filepath: str, output_directory: Optional[str]) -> None:    
         # If the output directory is not set, then use the current working directory
         directory: str = output_directory if output_directory else os.getcwd()
 
@@ -54,7 +54,7 @@ class Model:
         logging.info("Converted to .wav at {output_filepath}")
 
     @functools.cache
-    def get_frequencies(self, low_cutoff: int = 60, low_max: int = 250, mid_max: int = 5000, high_cutoff: int = 10000) -> typing.Tuple[NDArray, NDArray, NDArray]:
+    def get_frequencies(self, low_cutoff: int = 60, low_max: int = 250, mid_max: int = 5000, high_cutoff: int = 10000) -> Tuple[NDArray, NDArray, NDArray]:
         """ Returns the low, mid, and high frequencies as ndarrays in a tuple
         """
         if not self._frequencies:
@@ -67,7 +67,7 @@ class Model:
 
         return (self._frequencies[low_mask], self._frequencies[mid_mask], self._frequencies[high_mask])
             
-    def calculate_rt60(self) -> typing.Tuple[int, int, int, int]:
+    def calculate_rt60(self) -> Tuple[int, int, int, int]:
         """ Generate a tuple containing the low, mid, high, and average rt60 values
         """
         pass
