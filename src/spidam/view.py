@@ -3,6 +3,18 @@
 import tkinter as tk
 import tkinter.ttk
 from tkinter import StringVar
+from tkinter import filedialog as fd
+import matplotlib
+from matplotlib import pyplot
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
+import numpy as np
+from numpy.typing import NDArray
+
+import os
+
+
+#from pandas import options
 
 from model import Model
 
@@ -18,9 +30,13 @@ class View:
         self.root = tk.Tk()
         self.root.title('Group 25 SPIDAM')
         self.root.resizable(False, False)
-        self.root.geometry('700x800')
+        self.root.geometry('870x800')
 
         self.model = model
+
+        self.controller = None
+        def set_controller(self, controller):
+            self.controller = controller
 
         ##will replace
         #self.create_widgets()
@@ -39,31 +55,86 @@ class View:
 
         ##Buttons (this will be moved to self.create_widgets()
         #
-        #Open file button, temporary command
-        _openfile_btn = tkinter.ttk.Button(self.mainframe, text='Open a File', command=print('Temp Openfile'))
+        ##Open file button
+        #
+        #Precursor data for label
+        self.gfile = ''
+        self.filename =''
+        wavfile = StringVar()
+        wavfile.set('File Name: ')
+        #Function definition
+        def open_file():
+            filetypes = (('wav files', '*.wav'), ('mpeg-4 files', '*.m4a'), ('All files', '*.*'))
+            self.filename = fd.askopenfilename(title='Open a file', initialdir='/', filetypes=filetypes)
+            self.gfile = os.path.basename(self.filename)
+            wavfile.set('File Name: ' + self.gfile)
+        #Button definition and function call on button press
+        _openfile_btn = tkinter.ttk.Button(self.mainframe, text='Open a File', command=open_file)
         _openfile_btn.grid(row = 0, column = 0, sticky='W')
+        # Filename label, will start empty and populate after Open file command
+        self.filelabel = tkinter.ttk.Frame(self.mainframe, padding='5 5 5 5')
+        self.filelabel.grid(row=1, column=1, sticky=('E' 'W' 'N' 'S'))
+        mylabel = tk.Label(self.filelabel, textvariable=wavfile)
+        mylabel.pack()
 
-        #Analyze file button, temporary command, will need to be hidden until Open file command has been processed
-        _analyzefile_btn = tkinter.ttk.Button(self.mainframe, text='Analyze File', command=print('Temp Analyzefile'))
+        ##Analyze file button
+        #
+        #Precursor data for labels
+        timerec = StringVar()
+        timerec.set('File Length = 0s')
+        resonance = StringVar()
+        resonance.set('Resonant Frequency: ___ Hz')
+        rt60 = StringVar()
+        rt60.set('Difference: _._s')
+        #Function definition
+        def analyze_file():
+            self.model.load_audio(self.filename)
+            #graph call
+
+            timerec.set('File Length: ' + self.model.duration + 's')
+            resonance.set('Resonant Frequency: ' + self.model.highest_resonance + ' Hz')
+            #replace with the rt60 difference function
+            #rt60.set('Difference: ' + _ + 's'))
+
+
+        #Analyze file button
+        _analyzefile_btn = tkinter.ttk.Button(self.mainframe, text='Analyze File', command=analyze_file)
         _analyzefile_btn.grid(row = 0, column = 2, sticky='E')
 
-        #Filename label, will start empty and populate after Open file command
-        wavfile = StringVar()
-        TEMPFILENAME = None
-        if TEMPFILENAME != None:
-            wavfile.set('File Name: ' + self.model.filepath)
-        else:
-            wavfile.set('File Name: ')
-        self.filelabel= tkinter.ttk.Frame(self.mainframe, padding='5 5 5 5')
-        self.filelabel.grid(row = 1, column = 1, sticky = ('E' 'W' 'N' 'S'))
-        mylabel=tk.Label(self.filelabel,textvariable=wavfile)
-        mylabel.pack()
+
 
         ##
         ## GRAPHS WILL GO HERE
         ##
+        fig, ax = pyplot.subplots()
+        data = np.array(0)
+        ax.plot(data)
+
+        pyplot.title("Waveform Graph")
+        pyplot.xlabel("Time (s)")
+        pyplot.ylabel("Amplitude")
+        canvas = FigureCanvasTkAgg(fig, master=self.mainframe)
+        canvas.draw()
+
+        canvas.get_tk_widget().grid(row = 2, column = 1, sticky = 'EW')
+
+        #this function and process prevents pyplot.subplots() from preventing the function from exiting
+        def _closer():
+            self.root.quit()
+            self.root.destroy()
+        self.root.protocol("WM_DELETE_WINDOW", _closer)
+
+        #Intensity Graph
+        def intensity_plot():
+            pass
+        #Waveform Graph (Default)
+        def waveform_plot():
+            pass
         #temporary graph window
         #this will use mainframe row 2
+        #Bonus Graph
+        def bonus_plot():
+            pass
 
 
         ##Graphing buttons
@@ -85,42 +156,19 @@ class View:
         _combine_btn = tkinter.ttk.Button(self.mainframe, text='Combine RT60 Graphs', command=print('Temp Combine'))
         _combine_btn.grid(row=5, column=2)
 
-
         ##Labels
         #
-        #File Length Label
-        #This time duration block will update when the .wav time is analyzed, however this requires
-        #model/controller functions before the TEMPORARY markers can be removed.
-        timerec = StringVar()
-        TEMPORARY = None
-        if TEMPORARY != None:
-            timerec.set('File Length: ' + str(TEMPORARY) + 's')
-        else:
-            timerec.set('File Length = ')
+        # File Length Label
         self.timelabel = tkinter.ttk.Frame(self.mainframe, padding='5 5 5 5')
         self.timelabel.grid(row=4, column=1, sticky=('E' 'W' 'N' 'S'))
         _timelabel = tk.Label(self.timelabel, textvariable=timerec)
         _timelabel.pack()
-
-        #Resonant Frequency Label
-        #This will work so long as the _highest_resonance() function is return str(frequency)
-        resonance = StringVar()
-        if self.model.highest_resonance() != None:
-            resonance.set('Resonant Frequency: ' + str(self.model.highest_resonance())+' Hz')
-        else:
-            resonance.set('Resonant Frequency: ')
+        # Resonant Frequency Label
         self.frequencylabel = tkinter.ttk.Frame(self.mainframe, padding='5 5 5 5')
         self.frequencylabel.grid(row=5, column=1, sticky=('E' 'W' 'N' 'S'))
         _frequencylabel = tk.Label(self.frequencylabel, textvariable=resonance)
         _frequencylabel.pack()
-
-        #RT60 Difference Label
-        #This will work so long as the _calculate_rt60() function is return str(frequency)
-        rt60 = StringVar()
-        if self.model.calculate_rt60() != None:
-            rt60.set('Difference: ' + str(self.model.calculate_rt60() + 's'))
-        else:
-            rt60.set('Difference: ')
+        # RT60 Difference Label
         self.rt60difference = tkinter.ttk.Frame(self.mainframe, padding='5 5 5 5')
         self.rt60difference.grid(row=6, column=1, sticky=('E' 'W' 'N' 'S'))
         _rt60difference = tk.Label(self.rt60difference, textvariable=rt60)
@@ -128,9 +176,11 @@ class View:
 
 
 
+
+
 #Temporary tester to run the GUI, uncomment this when testing until controller.py exists
-'''if __name__ == "__main__":
+if __name__ == "__main__":
     model = Model()
     view = View(model)
 
-    view.root.mainloop()'''
+    view.root.mainloop()
