@@ -7,14 +7,15 @@ import ffmpeg
 import scipy.io
 import scipy.signal
 import numpy as np
+from numpy.typing import NDArray
 
 class Model:
     def __init__(self) -> None:
         self._filepath: str = None
-        self._audio: np.ndarray = None
+        self._audio: NDArray = None
         self._sample_rate: int = None
-        self._frequencies: np.ndarray = None
-        self._pxx: np.ndarray = None
+        self._frequencies: NDArray = None
+        self._pxx: NDArray = None
         self._duration: int = None
  
     def load_audio(self, filepath: str, output_directory: typing.Optional[str] = None) -> None: 
@@ -53,16 +54,16 @@ class Model:
         logging.info("Converted to .wav at {output_filepath}")
 
     @functools.cache
-    def get_frequencies(self, low_cutoff: int = 60, low_max: int = 250, mid_max: int = 5000, high_cutoff: int = 10000) -> typing.Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    def get_frequencies(self, low_cutoff: int = 60, low_max: int = 250, mid_max: int = 5000, high_cutoff: int = 10000) -> typing.Tuple[NDArray, NDArray, NDArray]:
         """ Returns the low, mid, and high frequencies as ndarrays in a tuple
         """
         if not self._frequencies:
             logging.critical("Load audio file")
             raise ValueError("Load audio file")
     
-        low_mask: np.ndarray = low_cutoff <= self._frequencies <= low_max
-        mid_mask: np.ndarray = low_max < self._frequencies <= mid_max
-        high_mask: np.ndarray = mid_max < self._frequencies <= high_cutoff
+        low_mask: NDArray = low_cutoff <= self._frequencies <= low_max
+        mid_mask: NDArray = low_max < self._frequencies <= mid_max
+        high_mask: NDArray = mid_max < self._frequencies <= high_cutoff
 
         return (self._frequencies[low_mask], self._frequencies[mid_mask], self._frequencies[high_mask])
             
