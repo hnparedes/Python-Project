@@ -66,14 +66,13 @@ class Model:
 
         return (self._frequencies[low_mask], self._frequencies[mid_mask], self._frequencies[high_mask])
             
-        
-
     def calculate_rt60(self) -> typing.Tuple[int, int, int, int]:
         """ Generate a tuple containing the low, mid, high, and average rt60 values
         """
         pass
 
     @property
+    @functools.cached_property
     def highest_resonance(self) -> int:
         return self._frequencies[np.argmax(self._pxx)]
         
@@ -101,3 +100,4 @@ class Model:
         """ Duration of the audio fi;e
         """
         return self._duration
+    
