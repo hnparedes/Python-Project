@@ -11,7 +11,7 @@ if __name__=="__main__":
 	view = View(model)
 	
 	#Controller
-	#controller = Controller(model, view)
+	controller = Controller(model, view)
 
 	#Run root.mainloop
 	view.root.mainloop()
