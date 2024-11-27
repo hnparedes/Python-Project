@@ -95,8 +95,8 @@ class View:
             self.model.load_audio(self.filename)
             #graph call
 
-            timerec.set('File Length: ' + self.model.duration + 's')
-            resonance.set('Resonant Frequency: ' + self.model.highest_resonance + ' Hz')
+            timerec.set(f'File Length: {self.model.duration} s')
+            resonance.set(f'Resonant Frequency: {self.model.highest_resonance} Hz')
             #replace with the rt60 difference function
             #rt60.set('Difference: ' + _ + 's'))
 
