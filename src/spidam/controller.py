@@ -32,22 +32,22 @@ class Controller:
         self.waveform_plotter()
         ##Updating labels
         self.view.timerec.set('File Length: ' + str(self.model.duration) + 's')
-        self.view.resonance.set('Resonant Frequency: ' + str(self.model.highest_resonance()) + ' Hz')
+        self.view.resonance.set('Resonant Frequency: ' + str(self.model.highest_resonance) + ' Hz')
         self.view.rt60.set('Difference: ' + str(self.model.calculate_rt60_difference()) + 's')
 
     #Intensity Graph Data Connection from Model
     def intensity_plotter(self):
         # Set data (intensity, frequency, time)
-        intensitydata = self.model.sound_intensity()
-        frequencydata = self.model.unfiltered_frequency()
-        time = self.model.duration()
+        intensitydata = self.model.sound_intensity
+        frequencydata = self.model.unfiltered_frequency
+        time = self.model.duration
         self.view.intensity_plot(intensitydata,frequencydata,time)
 
     #Waveform Graph Data Connection from Model
     def waveform_plotter(self):
         # Set data (wave amplitude, time)
-        time = self.model.duration()
-        amplitude = self.model.waveform_amplitude()
+        time = self.model.duration
+        amplitude = self.model.waveform_amplitude
         self.view.waveform_plot(amplitude, time)
 
     #RT60 Alternating Graph Data Connection from Model
@@ -65,7 +65,7 @@ class Controller:
         elif self.mode % 3 == 2:  # High
             modename = "High RT60 "
             rtdata = high
-        time = self.model.duration()
+        time = self.model.duration
         ##Alternating Button - EC
         self.mode+=1
         self.view.rt60_plot(rtdata, time, modename)
@@ -74,5 +74,5 @@ class Controller:
     def combinert60_plotter(self):
         # Set data (RT60 frequencies, time)
         low, mid, high = self.mode.calculate_rt60()
-        time = self.model.duration()
+        time = self.model.duration
         self.view.combine_rt60(low, mid, high, time)
