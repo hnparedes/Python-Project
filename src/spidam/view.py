@@ -25,6 +25,13 @@ class View:
         self.mainframe.grid(row = 0, column = 0, sticky=(''))
         self.mainframe.grid_columnconfigure((0,1,2),weight=1)
         #
+        ##Setting up a hidden frame that opens after file is analyzed
+        self.hiddenframe= tkinter.ttk.Frame(self.root, padding='5 5 5 5')
+        self.hiddenframe.grid(row = 1, column = 0, sticky=(''))
+        self.hiddenframe.grid_columnconfigure((0,1,2),weight=1)
+        ##Hide the hidden frame on init
+        self.hiddenframe.grid_forget()
+        #
         ##Closer function and process prevents pyplot.subplots() from preventing the function from exiting properly.
         def _closer():
             if self.controller:
@@ -50,6 +57,10 @@ class View:
             if self.controller:
                 self.controller.open_file()
                 wavfile.set('File Name: ' + self.controller.gfile)
+                #Create analyze file button after open file command
+                _analyzefile_btn = tkinter.ttk.Button(self.mainframe, text='Analyze File', command=analyze_file)
+                _analyzefile_btn.grid(row=1, column=0, sticky='W')
+
         #Open file button
         _openfile_btn = tkinter.ttk.Button(self.mainframe, text='Open a File', command=open_file)
         _openfile_btn.grid(row = 0, column = 0, sticky = 'W')
@@ -64,9 +75,8 @@ class View:
         def analyze_file():
             if self.controller:
                 self.controller.analyze_file()
-        #Analyze file button
-        _analyzefile_btn = tkinter.ttk.Button(self.mainframe, text='Analyze File', command=analyze_file)
-        _analyzefile_btn.grid(row = 1, column = 0, sticky = 'W')
+                #Return hidden frame after analyze file command
+                self.hiddenframe.grid()
 
         ###          ###
         ###  GRAPHS  ###
@@ -88,47 +98,47 @@ class View:
         def intensity_selected():
             if self.controller:
                 self.controller.intensity_plotter()
-        _intensity_btn = tkinter.ttk.Button(self.mainframe, text='Intensity Graph', command=intensity_selected)
+        _intensity_btn = tkinter.ttk.Button(self.hiddenframe, text='Intensity Graph', command=intensity_selected)
         _intensity_btn.grid(row=3, column=0)
 
         #Waveform Button - Waveform Graph
         def waveform_selected():
             if self.controller:
                 self.controller.waveform_plotter()
-        _waveform_btn = tkinter.ttk.Button(self.mainframe, text='Waveform Graph', command=waveform_selected)
+        _waveform_btn = tkinter.ttk.Button(self.hiddenframe, text='Waveform Graph', command=waveform_selected)
         _waveform_btn.grid(row=4, column=0)
 
         #RT60 Button
         def rt60_selected():
             if self.controller:
                 self.controller.rt60_plotter()
-        _cycle_btn = tkinter.ttk.Button(self.mainframe, text='Cycle RT60 Graphs', command=rt60_selected)
+        _cycle_btn = tkinter.ttk.Button(self.hiddenframe, text='Cycle RT60 Graphs', command=rt60_selected)
         _cycle_btn.grid(row=5, column=0)
 
         #Combined RT60 Button
         def combinert60_selected():
             if self.controller:
                 self.controller.combinert60_plotter()
-        _combine_btn = tkinter.ttk.Button(self.mainframe, text='Combine RT60 Graphs', command=combinert60_selected)
+        _combine_btn = tkinter.ttk.Button(self.hiddenframe, text='Combine RT60 Graphs', command=combinert60_selected)
         _combine_btn.grid(row=6, column=0)
 
         ###          ###
         ###  Labels  ###
         ###          ###
         # File Length Label
-        self.timelabel = tkinter.ttk.Frame(self.mainframe, padding='5 5 5 5')
+        self.timelabel = tkinter.ttk.Frame(self.hiddenframe, padding='5 5 5 5')
         self.timelabel.grid(row=4, column=1, sticky=('E' 'W' 'N' 'S'))
         _timelabel = tk.Label(self.timelabel, textvariable=timerec)
         _timelabel.pack()
 
         # Resonant Frequency Label
-        self.frequencylabel = tkinter.ttk.Frame(self.mainframe, padding='5 5 5 5')
+        self.frequencylabel = tkinter.ttk.Frame(self.hiddenframe, padding='5 5 5 5')
         self.frequencylabel.grid(row=5, column=1, sticky=('E' 'W' 'N' 'S'))
         _frequencylabel = tk.Label(self.frequencylabel, textvariable=resonance)
         _frequencylabel.pack()
 
         # RT60 Difference Label
-        self.rt60difference = tkinter.ttk.Frame(self.mainframe, padding='5 5 5 5')
+        self.rt60difference = tkinter.ttk.Frame(self.hiddenframe, padding='5 5 5 5')
         self.rt60difference.grid(row=6, column=1, sticky=('E' 'W' 'N' 'S'))
         _rt60difference = tk.Label(self.rt60difference, textvariable=rt60)
         _rt60difference.pack()
