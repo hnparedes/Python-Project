@@ -10,7 +10,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 import numpy as np
 from numpy.typing import NDArray
-
+import os
 
 
 
@@ -62,13 +62,14 @@ class View:
         #
         #Precursor data for label
         self.gfile = ''
+        self.filename =''
         wavfile = StringVar()
         wavfile.set('File Name: ')
         #Function definition
         def open_file():
             filetypes = (('wav files', '*.wav'), ('mpeg-4 files', '*.m4a'), ('All files', '*.*'))
-            filename = fd.askopenfilename(title='Open a file', initialdir='/', filetypes=filetypes)
-            self.gfile = filename
+            self.filename = fd.askopenfilename(title='Open a file', initialdir='/', filetypes=filetypes)
+            self.gfile = os.path.basename(self,filename)
             wavfile.set('File Name: ' + self.gfile)
         #Button definition and function call on button press
         _openfile_btn = tkinter.ttk.Button(self.mainframe, text='Open a File', command=open_file)
@@ -89,8 +90,9 @@ class View:
         rt60 = StringVar()
         rt60.set('Difference: _._s')
 
+        #Function Definition
         def analyze_file():
-            self.model.load_audio(self.gfile)
+            self.model.load_audio(self.filename)
             #graph call
 
             timerec.set('File Length: ' + self.model.duration + 's')
