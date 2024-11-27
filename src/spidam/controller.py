@@ -38,20 +38,16 @@ class Controller:
     #Intensity Graph Data Connection from Model
     def intensity_plotter(self):
         # Set data (intensity, frequency, time)
-        '''UPDATE WITH DATA CALLS AND REMOVE TESTING VALUES'''
-        # intensitydata = function for overall intensity
+        intensitydata = self.model.sound_intensity()
         frequencydata = self.model.unfiltered_frequency()
         time = self.model.duration()
-        ''''''
         self.view.intensity_plot(intensitydata,frequencydata,time)
 
     #Waveform Graph Data Connection from Model
     def waveform_plotter(self):
         # Set data (wave amplitude, time)
-        '''UPDATE WITH DATA CALLS AND REMOVE TESTING VALUES'''
         time = self.model.duration()
-        # amplitude = funciton for wave amplitude
-        ''''''
+        amplitude = self.model.waveform_amplitude()
         self.view.waveform_plot(amplitude, time)
 
     #RT60 Alternating Graph Data Connection from Model
