@@ -1,3 +1,4 @@
+
 import os
 import logging
 import functools
@@ -100,13 +101,31 @@ class Model:
         if self._frequencies is None or self._pxx is None:
             raise ValueError("Audio file must be loaded first.")
         return self._frequencies[np.argmax(self._pxx)]
+
+    @property
+    def waveform_amplitude(self) -> float:
+        """Maximum amplitude of the waveform (absolute value)."""
+        if self._audio is None:
+            raise ValueError("Audio file must be loaded first.")
+        return np.max(np.abs(self._audio))
+    
+    @property
+    def sound_intensity(self) -> float:
+        """Average sound intensity in decibels (dB)."""
+        if self._audio is None:
+            raise ValueError("Audio file must be loaded first.")
+        # Compute power of the waveform
+        power = np.mean(self._audio ** 2)
+        # Convert power to dB scale
+        intensity_db = 10 * np.log10(power)
+        return intensity_db
         
     @property
     def filepath(self) -> str:
         """ Filepath of processed audiofile
 
         Returns:
-            str: Filepath of processed audiofile
+            str: Filepath
         """    
 
         return self._filepath
@@ -123,9 +142,17 @@ class Model:
     @property
     def duration(self) -> float:
         """ Duration of the audio file
+
+        Returns:
+            float: Duration
         """
         return self._duration
 
     @property
     def unfiltered_frequency(self) -> NDArray:
+        """ Frequency of the audio file
+
+        Returns:
+            NDArray: Frequencies
+        """
         return self._frequencies
