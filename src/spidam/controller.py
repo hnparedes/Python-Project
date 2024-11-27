@@ -32,21 +32,16 @@ class Controller:
         self.view.waveform_plot()
         ##Updating labels
         self.view.timerec.set('File Length: ' + str(self.model.duration) + 's')
-        self.view.resonance.set('Resonant Frequency: ' + str(self.model.highest_resonance) + ' Hz')
-        '''UPDATE WITH RT60 DIFFERENCE FUNCTION'''
-        #self.view.rt60.set('Difference: ' + _ + 's'))
-        ''''''
+        self.view.resonance.set('Resonant Frequency: ' + str(self.model.highest_resonance()) + ' Hz')
+        self.view.rt60.set('Difference: ' + str(self.model.calculate_rt60_difference()) + 's')
 
     #Intensity Graph Data Connection from Model
     def intensity_plotter(self):
         # Set data (intensity, frequency, time)
         '''UPDATE WITH DATA CALLS AND REMOVE TESTING VALUES'''
         # intensitydata = function for overall intensity
-        # frequencydata = function for overall frequency
-        # time = self.model.duration()
-        intensitydata = np.array([[1, 2, 1], [1, 2, 3], [3, 2, 1]])
-        frequencydata = np.array([0, 5, 10])
-        time = np.array([1, 2, 3])
+        frequencydata = self.model.unfiltered_frequency()
+        time = self.model.duration()
         ''''''
         self.view.intensity_plot(intensitydata,frequencydata,time)
 
@@ -54,10 +49,8 @@ class Controller:
     def waveform_plotter(self):
         # Set data (wave amplitude, time)
         '''UPDATE WITH DATA CALLS AND REMOVE TESTING VALUES'''
-        # time = self.model.duration()
-        # wavedata function, amplitude result
-        amplitude = np.array([1, 2, 1])
-        time = np.array([1, 2, 3])
+        time = self.model.duration()
+        # amplitude = funciton for wave amplitude
         ''''''
         self.view.waveform_plot(amplitude, time)
 
@@ -65,23 +58,18 @@ class Controller:
     def rt60_plotter(self):
         ##Alterating button tracker- EC
         # Set data depending on alternating state (RT60 frequency, time)
-        '''UPDATE WITH DATA CALLS AND REMOVE TESTING VALUES'''
+        #Seperate RT60 Values
+        low, mid, high = self.model.calculate_rt60()
         if self.mode % 3 == 0:  # Low
             modename = "Low RT60 "
-            # rtdata = self.model.get_frequencies()[0]
-            rtdata = np.array([1, 2, 3])
+            rtdata = low
         elif self.mode % 3 == 1:  # Mid
             modename = "Mid RT60 "
-            # rtdata = self.model.get_frequencies()[1]
-            rtdata = np.array([3, 2, 1])
+            rtdata = mid
         elif self.mode % 3 == 2:  # High
             modename = "High RT60 "
-            # rtdata = self.model.get_frequencies()[2]
-            rtdata = np.array([2, 3, 2])
-        # time = self.model.duration()
-        # rtdata = np.array([1, 2, 1])
-        time = np.array([1, 2, 3])
-        ''''''
+            rtdata = high
+        time = self.model.duration()
         ##Alternating Button - EC
         self.mode+=1
         self.view.rt60_plot(rtdata, time, modename)
@@ -89,14 +77,6 @@ class Controller:
     #Combined RT60 Graph Data Connection from Model
     def combinert60_plotter(self):
         # Set data (RT60 frequencies, time)
-        '''UPDATE WITH DATA CALLS AND REMOVE TESTING VALUES'''
-        # low_wavedata = self.model.get_frequencies()[0]
-        # mid_wavedata = self.model.get_frequencies()[1]
-        # high_wavedata = self.model.get_frequencies()[2]
-        low_wavedata = np.array([1, 2, 3])
-        mid_wavedata = np.array([3, 2, 1])
-        high_wavedata = np.array([2, 3, 2])
-        # time = self.model.duration()
-        time = np.array([1, 2, 3])
-        ''''''
-        self.view.combine_rt60(low_wavedata, mid_wavedata, high_wavedata, time)
+        low, mid, high = self.mode.calculate_rt60()
+        time = self.model.duration()
+        self.view.combine_rt60(low, mid, high, time)
