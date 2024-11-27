@@ -29,7 +29,7 @@ class Controller:
         ##Loads selected file into .wav converter and begins analysis
         self.model.load_audio(self.filename)
         ##Default graph call
-        self.view.waveform_plot()
+        self.waveform_plotter()
         ##Updating labels
         self.view.timerec.set('File Length: ' + str(self.model.duration) + 's')
         self.view.resonance.set('Resonant Frequency: ' + str(self.model.highest_resonance()) + ' Hz')

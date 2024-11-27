@@ -43,20 +43,20 @@ class View:
         ###         ###
         #
         #Precursor data for labels
-        wavfile = StringVar()
-        wavfile.set('File Name: ')
-        timerec = StringVar()
-        timerec.set('File Length = 0s')
-        resonance = StringVar()
-        resonance.set('Resonant Frequency: ___ Hz')
-        rt60 = StringVar()
-        rt60.set('Difference: _._s')
+        self.wavfile = StringVar()
+        self.wavfile.set('File Name: ')
+        self.timerec = StringVar()
+        self.timerec.set('File Length = 0s')
+        self.resonance = StringVar()
+        self.resonance.set('Resonant Frequency: ___ Hz')
+        self.rt60 = StringVar()
+        self.rt60.set('Difference: _._s')
         #
         #Open file command definition
         def open_file():
             if self.controller:
                 self.controller.open_file()
-                wavfile.set('File Name: ' + self.controller.gfile)
+                self.wavfile.set('File Name: ' + self.controller.gfile)
                 #Create analyze file button after open file command
                 _analyzefile_btn = tkinter.ttk.Button(self.mainframe, text='Analyze File', command=analyze_file)
                 _analyzefile_btn.grid(row=1, column=0, sticky='W')
@@ -68,7 +68,7 @@ class View:
         # Filename label, will start empty and populate after Open file command
         self.filelabel = tkinter.ttk.Frame(self.mainframe, padding='5 5 5 5')
         self.filelabel.grid(row=1, column=1, sticky=('E' 'W' 'N' 'S'))
-        mylabel = tk.Label(self.filelabel, textvariable=wavfile)
+        mylabel = tk.Label(self.filelabel, textvariable=self.wavfile)
         mylabel.pack()
 
         #Analyze command Definition
@@ -128,19 +128,19 @@ class View:
         # File Length Label
         self.timelabel = tkinter.ttk.Frame(self.hiddenframe, padding='5 5 5 5')
         self.timelabel.grid(row=4, column=1, sticky=('E' 'W' 'N' 'S'))
-        _timelabel = tk.Label(self.timelabel, textvariable=timerec)
+        _timelabel = tk.Label(self.timelabel, textvariable=self.timerec)
         _timelabel.pack()
 
         # Resonant Frequency Label
         self.frequencylabel = tkinter.ttk.Frame(self.hiddenframe, padding='5 5 5 5')
         self.frequencylabel.grid(row=5, column=1, sticky=('E' 'W' 'N' 'S'))
-        _frequencylabel = tk.Label(self.frequencylabel, textvariable=resonance)
+        _frequencylabel = tk.Label(self.frequencylabel, textvariable=self.resonance)
         _frequencylabel.pack()
 
         # RT60 Difference Label
         self.rt60difference = tkinter.ttk.Frame(self.hiddenframe, padding='5 5 5 5')
         self.rt60difference.grid(row=6, column=1, sticky=('E' 'W' 'N' 'S'))
-        _rt60difference = tk.Label(self.rt60difference, textvariable=rt60)
+        _rt60difference = tk.Label(self.rt60difference, textvariable=self.rt60)
         _rt60difference.pack()
 
     #Intensity Graph Implementation - This is the bonus graph
