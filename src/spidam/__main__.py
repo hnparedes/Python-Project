@@ -1,10 +1,8 @@
-import numpy as np
-import matplotlib.pyplot as plt
-
 from model import Model
 from view import View
 from controller import Controller
 
+'''Controller has been temporarily commented out, temporary tester removed from view.py module'''
 if __name__=="__main__":
 	#Model
 	model = Model()
@@ -13,7 +11,7 @@ if __name__=="__main__":
 	view = View(model)
 	
 	#Controller
-	controller = Controller(model, view)
+	#controller = Controller(model, view)
 
 	#Run root.mainloop
-	view.mainloop()
+	view.root.mainloop()
