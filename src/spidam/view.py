@@ -69,7 +69,7 @@ class View:
         def open_file():
             filetypes = (('wav files', '*.wav'), ('mpeg-4 files', '*.m4a'), ('All files', '*.*'))
             self.filename = fd.askopenfilename(title='Open a file', initialdir='/', filetypes=filetypes)
-            self.gfile = os.path.basename(self,filename)
+            self.gfile = os.path.basename(self.filename)
             wavfile.set('File Name: ' + self.gfile)
         #Button definition and function call on button press
         _openfile_btn = tkinter.ttk.Button(self.mainframe, text='Open a File', command=open_file)
