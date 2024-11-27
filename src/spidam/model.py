@@ -16,7 +16,7 @@ class Model:
         self._sample_rate: int = None
         self._frequencies: NDArray = None
         self._pxx: NDArray = None
-        self._duration: int = None
+        self._duration: float = None
  
     def load_audio(self, filepath: str, output_directory: Optional[str] = None) -> None:
         # Ensure the file exists
@@ -105,7 +105,7 @@ class Model:
         return self._sample_rate
     
     @property
-    def duration(self) -> int:
+    def duration(self) -> float:
         """ Duration of the audio fi;e
         """
         return self._duration
