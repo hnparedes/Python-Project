@@ -47,7 +47,7 @@ class Model:
         output_filepath: str = os.path.join(directory, filename)
 
         # Load the audiofile and convert into .wav
-        ffmpeg.input(filepath).output(output_filepath, ac=1, f='wav').run()
+        ffmpeg.input(filepath).output(output_filepath, f='wav').run()
         self._filepath = output_filepath
         logging.info("Converted to .wav at {output_filepath}")
 
@@ -71,8 +71,8 @@ class Model:
         return (self._frequencies[low_mask], self._frequencies[mid_mask], self._frequencies[high_mask])
             
     @functools.cache
-    def calculate_rt60(self, low_cutoff: int = 60, low_max: int = 250, mid_max: int = 5000, high_cutoff: int = 10000, decay_db: int = 60) -> Tuple[int, int, int, int]:
-        """ Generate a tuple containing the low, mid, high, and average rt60 values
+    def calculate_rt60(self, low_cutoff: int = 60, low_max: int = 250, mid_max: int = 5000, high_cutoff: int = 10000, decay_db: int = 60) -> Tuple[int, int, int]:
+        """ Generate a tuple containing the low, mid, high rt60
         """
         filtered_frequencies: Tuple[NDArray, NDArray, NDArray] = self.get_frequencies(low_cutoff, low_max, mid_max, high_cutoff)
         rt60 = []
