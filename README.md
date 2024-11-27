@@ -15,4 +15,4 @@ This project provides a graphical tool to load audio files, convert formats, cle
 1. Clone the repository:  
    ```shell
    git clone https://github.com/sjones5516/spidam.git
-Sphinx still isn't setup
+   ```
