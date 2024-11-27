@@ -129,6 +129,7 @@ class Model:
     @property
     def unfiltered_frequency(self) -> NDArray:
         return self._frequencies
+        
     @property
     def unfiltered_frequency(self) -> NDArray:
         return self._frequencies
