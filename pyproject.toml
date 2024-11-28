@@ -6,7 +6,6 @@ build-backend = "hatchling.build"
 packages = ["src/spidam"]
 include = [
   "src/spidam/*.py",
-  "tests",
   "docs"
 ]
 
