@@ -1,48 +1,49 @@
-#Imports
+# Imports
 import tkinter as tk
 import tkinter.ttk
 from tkinter import StringVar
 from matplotlib import pyplot
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
+
 class View:
     def __init__(self, model):
-        ###                 ###
-        ### Tkinter Setup   ###
-        ###                 ###
-        ##root
+        #                #
+        # Tkinter Setup  #
+        #                #
+        # root
         self.root = tk.Tk()
         self.root.title('Group 25 SPIDAM')
         self.root.resizable(False, False)
         self.root.geometry('850x750')
-        #
-        ##MVC Definition
+
+        # MVC Definition
         self.model = model
         self.controller = None
-        #
-        ##Setting up the main frame that all buttons/labels reside in
-        self.mainframe= tkinter.ttk.Frame(self.root, padding='5 5 5 5')
-        self.mainframe.grid(row = 0, column = 0, sticky=(''))
-        self.mainframe.grid_columnconfigure((0,1,2),weight=1)
-        #
-        ##Setting up a hidden frame that opens after file is analyzed
-        self.hiddenframe= tkinter.ttk.Frame(self.root, padding='5 5 5 5')
-        self.hiddenframe.grid(row = 1, column = 0, sticky=(''))
-        self.hiddenframe.grid_columnconfigure((0,1,2),weight=1)
-        ##Hide the hidden frame on init
+
+        # Setting up the main frame that all buttons/labels reside in
+        self.mainframe = tkinter.ttk.Frame(self.root, padding='5 5 5 5')
+        self.mainframe.grid(row=0, column=0, sticky=(''))
+        self.mainframe.grid_columnconfigure((0, 1, 2), weight=1)
+
+        # Setting up a hidden frame that opens after file is analyzed
+        self.hiddenframe = tkinter.ttk.Frame(self.root, padding='5 5 5 5')
+        self.hiddenframe.grid(row=1, column=0, sticky=(''))
+        self.hiddenframe.grid_columnconfigure((0, 1, 2), weight=1)
+        # Hide the hidden frame on init
         self.hiddenframe.grid_forget()
-        #
-        ##Closer function and process prevents pyplot.subplots() from preventing the function from exiting properly.
+
+        # Closer function and process prevents pyplot.subplots() from preventing the function from exiting properly.
         def _closer():
             if self.controller:
                 self.controller._closer()
         self.root.protocol("WM_DELETE_WINDOW", _closer)
 
-        ###         ###
-        ### Buttons ###
-        ###         ###
-        #
-        #Precursor data for labels
+        #         #
+        # Buttons #
+        #         #
+
+        # Precursor data for labels
         self.wavfile = StringVar()
         self.wavfile.set('File Name: ')
         self.timerec = StringVar()
@@ -51,19 +52,19 @@ class View:
         self.resonance.set('Resonant Frequency: ___ Hz')
         self.rt60 = StringVar()
         self.rt60.set('Difference: _._s')
-        #
-        #Open file command definition
+
+        # Open file command definition
         def open_file():
             if self.controller:
                 self.controller.open_file()
                 self.wavfile.set('File Name: ' + self.controller.gfile)
-                #Create analyze file button after open file command
+                # Create analyze file button after open file command
                 _analyzefile_btn = tkinter.ttk.Button(self.mainframe, text='Analyze File', command=analyze_file)
                 _analyzefile_btn.grid(row=1, column=0, sticky='W')
 
-        #Open file button
+        # Open file button
         _openfile_btn = tkinter.ttk.Button(self.mainframe, text='Open a File', command=open_file)
-        _openfile_btn.grid(row = 0, column = 0, sticky = 'W')
+        _openfile_btn.grid(row=0, column=0, sticky='W')
 
         # Filename label, will start empty and populate after Open file command
         self.filelabel = tkinter.ttk.Frame(self.mainframe, padding='5 5 5 5')
@@ -71,17 +72,17 @@ class View:
         mylabel = tk.Label(self.filelabel, textvariable=self.wavfile)
         mylabel.pack()
 
-        #Analyze command Definition
+        # Analyze command Definition
         def analyze_file():
             if self.controller:
                 self.controller.analyze_file()
-                #Return hidden frame after analyze file command
+                # Return hidden frame after analyze file command
                 self.hiddenframe.grid()
 
-        ###          ###
-        ###  GRAPHS  ###
-        ###          ###
-        #Empty Graph
+        #          #
+        #  GRAPHS  #
+        #          #
+        # Empty Graph
         self.fig, ax = pyplot.subplots()
         data = (0)
         time = (0)
@@ -91,40 +92,40 @@ class View:
         pyplot.ylabel("Y-axis")
         canvas = FigureCanvasTkAgg(self.fig, master=self.mainframe)
         canvas.draw()
-        canvas.get_tk_widget().grid(row = 2, column = 1)
+        canvas.get_tk_widget().grid(row=2, column=1)
 
-        ##Graphing buttons
-        #Intensity Button - Heatmap, Bonus Graph
+        # Graphing buttons
+        # Intensity Button - Heatmap, Bonus Graph
         def intensity_selected():
             if self.controller:
                 self.controller.intensity_plotter()
         _intensity_btn = tkinter.ttk.Button(self.hiddenframe, text='Intensity Graph', command=intensity_selected)
         _intensity_btn.grid(row=3, column=0)
 
-        #Waveform Button - Waveform Graph
+        # Waveform Button - Waveform Graph
         def waveform_selected():
             if self.controller:
                 self.controller.waveform_plotter()
         _waveform_btn = tkinter.ttk.Button(self.hiddenframe, text='Waveform Graph', command=waveform_selected)
         _waveform_btn.grid(row=4, column=0)
 
-        #RT60 Button
+        # RT60 Button
         def rt60_selected():
             if self.controller:
                 self.controller.rt60_plotter()
         _cycle_btn = tkinter.ttk.Button(self.hiddenframe, text='Cycle RT60 Graphs', command=rt60_selected)
         _cycle_btn.grid(row=5, column=0)
 
-        #Combined RT60 Button
+        # Combined RT60 Button
         def combinert60_selected():
             if self.controller:
                 self.controller.combinert60_plotter()
         _combine_btn = tkinter.ttk.Button(self.hiddenframe, text='Combine RT60 Graphs', command=combinert60_selected)
         _combine_btn.grid(row=6, column=0)
 
-        ###          ###
-        ###  Labels  ###
-        ###          ###
+        #          #
+        #  Labels  #
+        #          #
         # File Length Label
         self.timelabel = tkinter.ttk.Frame(self.hiddenframe, padding='5 5 5 5')
         self.timelabel.grid(row=4, column=1, sticky=('E' 'W' 'N' 'S'))
@@ -143,81 +144,81 @@ class View:
         _rt60difference = tk.Label(self.rt60difference, textvariable=self.rt60)
         _rt60difference.pack()
 
-    #Intensity Graph Implementation - This is the bonus graph
+    # Intensity Graph Implementation - This is the bonus graph
     def intensity_plot(self, intensitydata, frequencydata, time):
-        #Clear previous graph
+        # Clear previous graph
         pyplot.clf()
-        #
-        #Defining plot
+
+        # Defining plot
         pyplot.pcolormesh(time, frequencydata, intensitydata, cmap='autumn_r')
-        pyplot.colorbar(location='right',orientation='vertical',label='Intensity (dB)')
-        #
-        #Updating plot labels
+        pyplot.colorbar(location='right', orientation='vertical', label='Intensity (dB)')
+
+        # Updating plot labels
         pyplot.title("Frequency Graph")
         pyplot.xlabel("Time (s)")
         pyplot.ylabel("Frequency (Hz)")
-        #
-        #Updating GUI
+
+        # Updating GUI
         canvas = FigureCanvasTkAgg(self.fig, master=self.mainframe)
         canvas.draw()
         canvas.get_tk_widget().grid(row=2, column=1)
 
-    #Waveform Graph Implementation (Default)
+    # Waveform Graph Implementation (Default)
     def waveform_plot(self, amplitude, time):
-        #Clear previous graph
+        # Clear previous graph
         pyplot.clf()
-        #
-        #Defining plot
+
+        # Defining plot
         pyplot.plot(time, amplitude)
-        #
-        #Updating plot labels
+
+        # Updating plot labels
         pyplot.title("Waveform Graph")
         pyplot.xlabel("Time (s)")
         pyplot.ylabel("Amplitude")
-        #
-        #Updating GUI
+
+        # Updating GUI
         canvas = FigureCanvasTkAgg(self.fig, master=self.mainframe)
         canvas.draw()
         canvas.get_tk_widget().grid(row=2, column=1)
 
-    #Cycle RT60 Graph Implementation
+    # Cycle RT60 Graph Implementation
     def rt60_plot(self, rtdata, time, modename):
-        #Clear previous graph
+        # Clear previous graph
         pyplot.clf()
-        #
-        #Defining plot
+
+        # Defining plot
         pyplot.plot(time, rtdata)
-        #
-        #Updating plot labels (title is dynamic with RT60 type)
+
+        # Updating plot labels (title is dynamic with RT60 type)
         pyplot.title(modename+"Graph")
         pyplot.xlabel("Time (s)")
         pyplot.ylabel("Power (dB)")
-        #
-        #Updating GUI
+
+        # Updating GUI
         canvas = FigureCanvasTkAgg(self.fig, master=self.mainframe)
         canvas.draw()
         canvas.get_tk_widget().grid(row=2, column=1)
 
-    #Combined RT60 Graph Implementation
+    # Combined RT60 Graph Implementation
     def combine_rt60(self, low_wavedata, mid_wavedata, high_wavedata, time):
-        #Clear previous graph
+        # Clear previous graph
         pyplot.clf()
-        #
-        #Defining plot for all three graphs
+
+        # Defining plot for all three graphs
         pyplot.plot(time, low_wavedata)
         pyplot.plot(time, mid_wavedata)
         pyplot.plot(time, high_wavedata)
-        #
-        #Updating plot labels
+
+        # Updating plot labels
         pyplot.title("Combined Waveform Graph")
         pyplot.xlabel("Time (s)")
         pyplot.ylabel("Power (dB)")
-        #
-        #Updating GUI
+
+        # Updating GUI
         canvas = FigureCanvasTkAgg(self.fig, master=self.mainframe)
         canvas.draw()
         canvas.get_tk_widget().grid(row=2, column=1)
 
-    #Controller link
+    # Controller link
     def set_controller(self, controller):
         self.controller = controller
