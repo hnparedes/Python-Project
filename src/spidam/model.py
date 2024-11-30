@@ -98,11 +98,11 @@ class Model:
 
     def time_axis(self):
         timeaxis = []
-        self.x: float
-        self.x = 0
-        while self.x < self._duration - (1/self._sample_rate):
-            timeaxis.append(self.x)
-            self.x += (1 / self._sample_rate)
+        x: float
+        x = 0
+        while x < self._duration - (1 / self._sample_rate):
+            timeaxis.append(x)
+            x+=(1 / self._sample_rate)
         return timeaxis
 
     @property
