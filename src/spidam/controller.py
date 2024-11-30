@@ -1,8 +1,6 @@
 # Imports
 import os
-import numpy as np
 from tkinter import filedialog as fd
-
 
 class Controller:
     def __init__(self, model, view):
@@ -39,24 +37,26 @@ class Controller:
     # Intensity Graph Data Connection from Model
     def intensity_plotter(self):
         # Set data (intensity, frequency, time)
-        intensitydata = self.model.sound_intensity
-        frequencydata = self.model.unfiltered_frequency
-        time = self.model.duration
-        self.view.intensity_plot(intensitydata, frequencydata, time)
+        intensitydata = self.model.sound_intensity()
+        frequencydata = self.model.abs_waveform_amplitude()
+        time = self.model.time_axis()
+        self.view.intensity_plot(time, frequencydata, intensitydata)
 
     # Waveform Graph Data Connection from Model
     def waveform_plotter(self):
         # Set data (wave amplitude, time)
-        time = self.model.duration
-        amplitude = self.model.waveform_amplitude
-        self.view.waveform_plot(amplitude, time)
+        time = self.model.time_axis()
+        amplitude = self.model.waveform_amplitude()
+        self.view.waveform_plot(time, amplitude)
 
     # RT60 Alternating Graph Data Connection from Model
     def rt60_plotter(self):
         # Alternating button tracker- EC
         # Set data depending on alternating state (RT60 frequency, time)
         # Separate RT60 Values
-        low, mid, high = self.model.calculate_rt60()
+        low = self.model.calculate_rt60()[0]
+        mid = self.model.calculate_rt60()[1]
+        high = self.model.calculate_rt60()[2]
         if self.mode % 3 == 0:  # Low
             modename = "Low RT60 "
             rtdata = low
@@ -66,14 +66,14 @@ class Controller:
         elif self.mode % 3 == 2:  # High
             modename = "High RT60 "
             rtdata = high
-        time = self.model.duration
+        time = self.model.time_axis()
         # Alternating Button - EC
         self.mode += 1
-        self.view.rt60_plot(rtdata, time, modename)
+        self.view.rt60_plot(time, rtdata, modename)
 
     # Combined RT60 Graph Data Connection from Model
     def combinert60_plotter(self):
         # Set data (RT60 frequencies, time)
         low, mid, high = self.mode.calculate_rt60()
-        time = self.model.duration
-        self.view.combine_rt60(low, mid, high, time)
+        time = self.model.time_axis()
+        self.view.combine_rt60(time, low, mid, high)
