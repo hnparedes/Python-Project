@@ -92,7 +92,7 @@ class Model:
 
     def calculate_rt60_difference(self, target_rt60: float = 0.5) -> float:
         low, mid, high = self.calculate_rt60()
-        avg_rt60 = (low + mid + high) / 3
+        avg_rt60 = (np.mean(low) + np.mean(mid) + np.mean(high)) / 3
         difference = avg_rt60 - target_rt60
         return difference
 
