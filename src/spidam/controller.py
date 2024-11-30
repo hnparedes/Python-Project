@@ -74,6 +74,6 @@ class Controller:
     # Combined RT60 Graph Data Connection from Model
     def combinert60_plotter(self):
         # Set data (RT60 frequencies, time)
-        low, mid, high = self.mode.calculate_rt60()
+        low, mid, high = self.model.calculate_rt60()
         time = self.model.time_axis()
         self.view.combine_rt60(time, low, mid, high)
