@@ -119,7 +119,7 @@ class Model:
         return np.abs(self._audio)
     
     #@property
-    def sound_intensity(self) -> float:
+    def sound_intensity(self) ->  NDArray:
         """Average sound intensity in decibels (dB)."""
         if self._audio is None:
             raise ValueError("Audio file must be loaded first.")
@@ -129,11 +129,15 @@ class Model:
         The intensity ranges in the SPIDAM example from -100 to ~+50, and there is a value for every point of time.
         It is meant to be plotted as a Z axis on a heatmap where the X is time and Y is the absolute waveform amplitude.
         '''
-        power = np.mean(self._audio ** 2)
         # Convert power to dB scale
-        intensity_db = 10 * np.log10(power)
+        intensity_db = 10 * np.log10(self.power())
         return intensity_db
-        
+    
+    def power(self) -> NDArray:
+        if not self._audio:
+            raise ValueError("Audio file must be loaded first.")
+        return self._audio ** 2
+
     @property
     def filepath(self) -> str:
         """ Filepath of processed audiofile
