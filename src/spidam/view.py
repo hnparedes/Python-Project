@@ -145,12 +145,12 @@ class View:
         _rt60difference.pack()
 
     # Intensity Graph Implementation - This is the bonus graph
-    def intensity_plot(self, intensitydata, frequencydata, time):
+    def intensity_plot(self, time, frequencydata, intensitydata):
         # Clear previous graph
         pyplot.clf()
 
         # Defining plot
-        pyplot.pcolormesh(time, frequencydata, intensitydata, cmap='autumn_r')
+        pyplot.pcolormesh([time, frequencydata, intensitydata], cmap='autumn_r')
         pyplot.colorbar(location='right', orientation='vertical', label='Intensity (dB)')
 
         # Updating plot labels
@@ -164,7 +164,7 @@ class View:
         canvas.get_tk_widget().grid(row=2, column=1)
 
     # Waveform Graph Implementation (Default)
-    def waveform_plot(self, amplitude, time):
+    def waveform_plot(self, time, amplitude):
         # Clear previous graph
         pyplot.clf()
 
@@ -182,7 +182,7 @@ class View:
         canvas.get_tk_widget().grid(row=2, column=1)
 
     # Cycle RT60 Graph Implementation
-    def rt60_plot(self, rtdata, time, modename):
+    def rt60_plot(self, time, rtdata, modename):
         # Clear previous graph
         pyplot.clf()
 
@@ -200,14 +200,14 @@ class View:
         canvas.get_tk_widget().grid(row=2, column=1)
 
     # Combined RT60 Graph Implementation
-    def combine_rt60(self, low_wavedata, mid_wavedata, high_wavedata, time):
+    def combine_rt60(self, time, low, mid, high):
         # Clear previous graph
         pyplot.clf()
 
         # Defining plot for all three graphs
-        pyplot.plot(time, low_wavedata)
-        pyplot.plot(time, mid_wavedata)
-        pyplot.plot(time, high_wavedata)
+        pyplot.plot(time, low)
+        pyplot.plot(time, mid)
+        pyplot.plot(time, high)
 
         # Updating plot labels
         pyplot.title("Combined Waveform Graph")
