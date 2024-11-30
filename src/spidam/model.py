@@ -124,11 +124,6 @@ class Model:
         if self._audio is None:
             raise ValueError("Audio file must be loaded first.")
         # Compute power of the waveform
-        '''
-        J: this is wrong, sice np.mean makes this return a single value when the result is meant to be an array.
-        The intensity ranges in the SPIDAM example from -100 to ~+50, and there is a value for every point of time.
-        It is meant to be plotted as a Z axis on a heatmap where the X is time and Y is the absolute waveform amplitude.
-        '''
         # Convert power to dB scale
         intensity_db = 10 * np.log10(self.power())
         return intensity_db
