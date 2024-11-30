@@ -96,25 +96,39 @@ class Model:
         difference = avg_rt60 - target_rt60
         return difference
 
+    def time_axis(self):
+        timeaxis = []
+        self.x: float
+        self.x = 0
+        while self.x < self._duration - (1/self._sample_rate):
+            timeaxis.append(self.x)
+            self.x += (1 / self._sample_rate)
+        return timeaxis
+
     @property
     def highest_resonance(self) -> float:
         if self._frequencies is None or self._pxx is None:
             raise ValueError("Audio file must be loaded first.")
         return self._frequencies[np.argmax(self._pxx)]
 
-    @property
+    #@property
     def waveform_amplitude(self) -> float:
-        """Maximum amplitude of the waveform (absolute value)."""
-        if self._audio is None:
-            raise ValueError("Audio file must be loaded first.")
-        return np.max(np.abs(self._audio))
+        return self._audio
+
+    def abs_waveform_amplitude(self) -> float:
+        return np.abs(self._audio)
     
-    @property
+    #@property
     def sound_intensity(self) -> float:
         """Average sound intensity in decibels (dB)."""
         if self._audio is None:
             raise ValueError("Audio file must be loaded first.")
         # Compute power of the waveform
+        '''
+        J: this is wrong, sice np.mean makes this return a single value when the result is meant to be an array.
+        The intensity ranges in the SPIDAM example from -100 to ~+50, and there is a value for every point of time.
+        It is meant to be plotted as a Z axis on a heatmap where the X is time and Y is the absolute waveform amplitude.
+        '''
         power = np.mean(self._audio ** 2)
         # Convert power to dB scale
         intensity_db = 10 * np.log10(power)
