@@ -84,7 +84,7 @@ class Model:
             energy = np.flip(np.cumsum(power_rev))
             energy_db = 10 * np.log10(energy / np.max(energy))
             try:
-                i_decay = np.where(energy_db <= -decay_db)[0]
+                i_decay = np.where(energy_db <= -decay_db)[0][0]
                 t_decay = i_decay / self._sample_rate
                 rt60.append((60 / decay_db) * t_decay)
             except IndexError:
@@ -124,12 +124,16 @@ class Model:
         """Average sound intensity in decibels (dB)."""
         if self._audio is None:
             raise ValueError("Audio file must be loaded first.")
-        # Compute power of the waveform
+        # Compute mean power
+        mean_power = np.mean(self._audio ** 2)
+        
         # Convert power to dB scale
         intensity_db = 10 * np.log10(self.power())
         return intensity_db
     
     def power(self) -> NDArray:
+        if self._audio is None:
+            raise ValueError("Audio file must be loaded first.")
         return self._audio ** 2
 
     @property
