@@ -130,8 +130,6 @@ class Model:
         return intensity_db
     
     def power(self) -> NDArray:
-        if not self._audio:
-            raise ValueError("Audio file must be loaded first.")
         return self._audio ** 2
 
     @property
