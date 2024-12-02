@@ -1,3 +1,4 @@
+
 # Imports
 import tkinter as tk
 import tkinter.ttk
@@ -150,6 +151,9 @@ class View:
         pyplot.clf()
 
         # Defining plot
+        # Ensuring intensitydata is a 2D array (required by pcolormesh)
+        # time and frequencydata must define the grid for intensitydata
+        # time_mesh, freq_mesh = numpy.meshgrid(time, frequencydata)
         pyplot.pcolormesh([time, frequencydata, intensitydata], cmap='autumn_r')
         pyplot.colorbar(location='right', orientation='vertical', label='Intensity (dB)')
 
