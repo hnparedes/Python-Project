@@ -78,6 +78,10 @@ class Model:
         filtered_frequencies: Tuple[NDArray, NDArray, NDArray] = self.get_frequencies(low_cutoff, low_max, mid_max, high_cutoff)
         rt60 = []
         for frequency in filtered_frequencies:
+            if frequency.size == 0:
+                # If frequencies are single 0's, append 0.0 as RT60 value
+                rt60.append(0.0)
+                continue
             power = frequency ** 2
             power_rev = np.flip(power)
             energy = np.flip(np.cumsum(power_rev))
@@ -85,7 +89,7 @@ class Model:
             try:
                 i_decay = np.where(energy_db <= -decay_db)[0][0]
                 t_decay = i_decay / self._sample_rate
-                rt60.append((60 / decay_db) * t_decay)
+                rt60.append((60 / decay_db) * t_decay) # Ensures float
             except IndexError:
                 rt60.append(0.0)
         return tuple(rt60)
