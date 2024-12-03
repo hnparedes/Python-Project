@@ -38,8 +38,8 @@ class Controller:
     # Intensity Graph Data Connection from Model
     def intensity_plotter(self):
         # Set data (intensity, frequency, time)
-        intensitydata = self.model.sound_intensity()
-        frequencydata = self.model.abs_waveform_amplitude()
+        intensitydata = self.model.sample_rate()
+        frequencydata = self.model.waveform_amplitude()
         time = self.model.time_axis()
         self.view.intensity_plot(time, frequencydata, intensitydata)
 
