@@ -1,4 +1,5 @@
 numpy
 matplotlib
 scipy
-ffmpeg-python
+ffmpeg
+tkinter
