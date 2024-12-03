@@ -98,12 +98,7 @@ class Model:
         return difference
 
     def time_axis(self):
-        timeaxis = []
-        x: float
-        x = 0
-        while x < self._duration - (1 / self._sample_rate):
-            timeaxis.append(x)
-            x+=(1 / self._sample_rate)
+        timeaxis = np.linspace(0.,self._duration,self._audio.shape[0])
         return timeaxis
 
     @property
@@ -112,29 +107,8 @@ class Model:
             raise ValueError("Audio file must be loaded first.")
         return self._frequencies[np.argmax(self._pxx)]
 
-    #@property
     def waveform_amplitude(self) -> float:
         return self._audio
-
-    def abs_waveform_amplitude(self) -> float:
-        return np.abs(self._audio)
-    
-    #@property
-    def sound_intensity(self) ->  NDArray:
-        """Average sound intensity in decibels (dB)."""
-        if self._audio is None:
-            raise ValueError("Audio file must be loaded first.")
-        # Compute mean power
-        mean_power = np.mean(self._audio ** 2)
-        
-        # Convert power to dB scale
-        intensity_db = 10 * np.log10(self.power())
-        return intensity_db
-    
-    def power(self) -> NDArray:
-        if self._audio is None:
-            raise ValueError("Audio file must be loaded first.")
-        return self._audio ** 2
 
     @property
     def filepath(self) -> str:
@@ -145,8 +119,7 @@ class Model:
         """    
 
         return self._filepath
-    
-    @property
+
     def sample_rate(self) -> int:
         """ Sample rate of the audio file
 
