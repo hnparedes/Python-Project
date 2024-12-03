@@ -151,7 +151,7 @@ class View:
         pyplot.clf()
 
         # Defining plot
-        pyplot.pcolormesh([time, frequencydata, intensitydata], cmap='autumn_r')
+        time, pyplot.specgram(frequencydata, Fs=intensitydata, NFFT=1024, cmap=pyplot.get_cmap('autumn_r'))
         pyplot.colorbar(location='right', orientation='vertical', label='Intensity (dB)')
 
         # Updating plot labels
