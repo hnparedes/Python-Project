@@ -1,4 +1,3 @@
-
 # Imports
 import tkinter as tk
 import tkinter.ttk
@@ -24,12 +23,12 @@ class View:
 
         # Setting up the main frame that all buttons/labels reside in
         self.mainframe = tkinter.ttk.Frame(self.root, padding='5 5 5 5')
-        self.mainframe.grid(row=0, column=0, sticky=(''))
+        self.mainframe.grid(row=0, column=0, sticky='')
         self.mainframe.grid_columnconfigure((0, 1, 2), weight=1)
 
         # Setting up a hidden frame that opens after file is analyzed
         self.hiddenframe = tkinter.ttk.Frame(self.root, padding='5 5 5 5')
-        self.hiddenframe.grid(row=1, column=0, sticky=(''))
+        self.hiddenframe.grid(row=1, column=0, sticky='')
         self.hiddenframe.grid_columnconfigure((0, 1, 2), weight=1)
         # Hide the hidden frame on init
         self.hiddenframe.grid_forget()
@@ -69,7 +68,7 @@ class View:
 
         # Filename label, will start empty and populate after Open file command
         self.filelabel = tkinter.ttk.Frame(self.mainframe, padding='5 5 5 5')
-        self.filelabel.grid(row=1, column=1, sticky=('E' 'W' 'N' 'S'))
+        self.filelabel.grid(row=1, column=1, sticky='E' 'W' 'N' 'S')
         mylabel = tk.Label(self.filelabel, textvariable=self.wavfile)
         mylabel.pack()
 
@@ -85,8 +84,8 @@ class View:
         #          #
         # Empty Graph
         self.fig, ax = pyplot.subplots()
-        data = (0)
-        time = (0)
+        data = 0
+        time = 0
         ax.plot(time, data)
         pyplot.title("Default Graph")
         pyplot.xlabel("X-axis")
@@ -129,19 +128,19 @@ class View:
         #          #
         # File Length Label
         self.timelabel = tkinter.ttk.Frame(self.hiddenframe, padding='5 5 5 5')
-        self.timelabel.grid(row=4, column=1, sticky=('E' 'W' 'N' 'S'))
+        self.timelabel.grid(row=4, column=1, sticky='E' 'W' 'N' 'S')
         _timelabel = tk.Label(self.timelabel, textvariable=self.timerec)
         _timelabel.pack()
 
         # Resonant Frequency Label
         self.frequencylabel = tkinter.ttk.Frame(self.hiddenframe, padding='5 5 5 5')
-        self.frequencylabel.grid(row=5, column=1, sticky=('E' 'W' 'N' 'S'))
+        self.frequencylabel.grid(row=5, column=1, sticky='E' 'W' 'N' 'S')
         _frequencylabel = tk.Label(self.frequencylabel, textvariable=self.resonance)
         _frequencylabel.pack()
 
         # RT60 Difference Label
         self.rt60difference = tkinter.ttk.Frame(self.hiddenframe, padding='5 5 5 5')
-        self.rt60difference.grid(row=6, column=1, sticky=('E' 'W' 'N' 'S'))
+        self.rt60difference.grid(row=6, column=1, sticky='E' 'W' 'N' 'S')
         _rt60difference = tk.Label(self.rt60difference, textvariable=self.rt60)
         _rt60difference.pack()
 
