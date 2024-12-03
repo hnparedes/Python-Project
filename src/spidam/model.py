@@ -1,4 +1,3 @@
-
 # Imports
 import os
 import logging
@@ -70,7 +69,7 @@ class Model:
         low_mask: NDArray = np.logical_and(low_cutoff <= self._frequencies, self._frequencies <= low_max)
         mid_mask: NDArray = np.logical_and(low_max < self._frequencies, self._frequencies <= mid_max)
         high_mask: NDArray = np.logical_and(mid_max < self._frequencies, self._frequencies <= high_cutoff)
-        return (self._frequencies[low_mask], self._frequencies[mid_mask], self._frequencies[high_mask])
+        return self._frequencies[low_mask], self._frequencies[mid_mask], self._frequencies[high_mask]
             
     @functools.cache
     def calculate_rt60(self, low_cutoff: int = 60, low_max: int = 250, mid_max: int = 5000, high_cutoff: int = 10000, decay_db: int = 60) -> Tuple[float, float, float]:
