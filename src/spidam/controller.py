@@ -1,4 +1,3 @@
-
 # Imports
 import os
 from tkinter import filedialog as fd
