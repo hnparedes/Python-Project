@@ -135,7 +135,8 @@ class Model:
         rt60_mid = calculate_band_rt60(mid_filtered)
         rt60_high = calculate_band_rt60(high_filtered)
 
-        return rt60_low, rt60_mid, rt60_high
+        rt60 = [rt60_low, rt60_mid, rt60_high]
+        return tuple(rt60)
 
     def calculate_rt60_difference(self, target_rt60: float = 0.5) -> float:
         low, mid, high = self.calculate_rt60()
