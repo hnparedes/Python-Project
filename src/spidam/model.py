@@ -72,27 +72,54 @@ class Model:
         return self._frequencies[low_mask], self._frequencies[mid_mask], self._frequencies[high_mask]
             
     @functools.cache
-    def calculate_rt60(self, low_cutoff: int = 60, low_max: int = 250, mid_max: int = 5000, high_cutoff: int = 10000, decay_db: int = 60) -> Tuple[float, float, float]:
-        """ Generate a tuple containing the low, mid, high rt60
-        """
-        filtered_frequencies: Tuple[NDArray, NDArray, NDArray] = self.get_frequencies(low_cutoff, low_max, mid_max, high_cutoff)
-        rt60 = []
-        for frequency in filtered_frequencies:
-            if frequency.size == 0:
-                # If frequencies are single 0's, append 0.0 as RT60 value
-                rt60.append(0.0)
-                continue
-            power = frequency ** 2
-            power_rev = np.flip(power)
-            energy = np.flip(np.cumsum(power_rev))
-            energy_db = 10 * np.log10(energy / np.max(energy))
-            try:
-                i_decay = np.where(energy_db <= -decay_db)[0][0]
-                t_decay = i_decay / self._sample_rate
-                rt60.append((60 / decay_db) * t_decay) # Ensures float
-            except IndexError:
-                rt60.append(0.0)
-        return tuple(rt60)
+     def calculate_rt60(self) -> Tuple[float, float, float]:
+         """
+         Calculate RT60 reverberation time for low, mid, and high frequencies.
+
+         Returns:
+         - A tuple of RT60 values for low, mid, and high frequencies (in seconds).
+         """
+         if self._audio is None or self._sample_rate is None:
+             raise ValueError("Audio file must be loaded before calculating RT60.")
+
+         # Convert the signal to decibels (logarithmic scale)
+         audio_db = 10 * np.log10(np.abs(self._audio))
+    
+         # Find the maximum dB value and corresponding index
+         max_index = np.argmax(audio_db)
+         max_db = audio_db[max_index]
+
+         # Slice the audio data and time axis starting from the maximum dB point
+         sliced_db = audio_db[max_index:]
+         time_axis = self.time_axis()
+         sliced_time = time_axis[max_index:]
+
+         # Helper function to find the index of the nearest value
+         def find_nearest_index(array: NDArray, value: float) -> int:
+             return (np.abs(array - value)).argmin()
+
+         # Determine the -5 dB and -25 dB points
+         db_minus_5 = max_db - 5
+         db_minus_25 = max_db - 25
+
+         idx_minus_5 = find_nearest_index(sliced_db, db_minus_5)
+         idx_minus_25 = find_nearest_index(sliced_db, db_minus_25)
+
+         # Calculate RT20 and scale to RT60
+         time_minus_5 = sliced_time[idx_minus_5]
+         time_minus_25 = sliced_time[idx_minus_25]
+         rt20 = time_minus_25 - time_minus_5
+         rt60 = rt20 * 3
+
+         # Divide into frequency bands using get_frequencies
+         low_frequencies, mid_frequencies, high_frequencies = self.get_frequencies()
+
+         # Assign RT60 values for the bands (can apply frequency filters here if needed)
+         rt60_low = rt60  # Placeholder for actual low-frequency filtering
+         rt60_mid = rt60  # Placeholder for actual mid-frequency filtering
+         rt60_high = rt60  # Placeholder for actual high-frequency filtering
+
+         return rt60_low, rt60_mid, rt60_high
 
     def calculate_rt60_difference(self, target_rt60: float = 0.5) -> float:
         low, mid, high = self.calculate_rt60()
