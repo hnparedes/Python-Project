@@ -13,10 +13,7 @@ This project provides a graphical tool to load .wav audio files, convert its for
 - Import package libraries listed in `requirements.txt`
 
 ## Installation
-1. Clone the repository on pycharm using the command line in terminal:  
-   ```shell
-   git clone https://github.com/sjones5516/spidam.git
-   ```
+1. go to the terminal and type pip install -r requirements.txt
 2. Run __main__.py file
 3. Click open file and select .wav file or any audio file which wil then automatically convert to .wav
 4. Click analyze file so that it displays the reverberation frequency graph of the sound file
