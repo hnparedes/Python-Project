@@ -2,7 +2,7 @@
 import os
 import logging
 import functools
-from typing import Tuple, Optional, List
+from typing import Tuple, Optional
 
 import ffmpeg
 import scipy.io
@@ -80,27 +80,12 @@ class Model:
         Returns:
         - A tuple of RT60 values for low, mid, and high frequencies (in seconds).
         """
-        if self._audio is None or self._sample_rate is None:
-            raise ValueError("Audio file must be loaded before calculating RT60.")
-
-        # Retrieve the dynamic frequency ranges
-        low_freq_range, mid_freq_range, high_freq_range = self.get_frequencies()
-
-        # Helper function to apply a bandpass filter dynamically
-        def bandpass_filter(data: NDArray, freq_range: NDArray, sample_rate: int) -> NDArray:
-            nyquist = sample_rate / 2
-            low_cut = freq_range[0] / nyquist
-            high_cut = freq_range[-1] / nyquist
-            b, a = scipy.signal.butter(4, [low_cut, high_cut], btype='band')
-            return scipy.signal.filtfilt(b, a, data)
-
-        # Apply bandpass filters for dynamic frequency ranges
-        low_filtered = bandpass_filter(self._audio, low_freq_range, self._sample_rate)
-        mid_filtered = bandpass_filter(self._audio, mid_freq_range, self._sample_rate)
-        high_filtered = bandpass_filter(self._audio, high_freq_range, self._sample_rate)
-
         # Helper function to calculate RT60 for a frequency band
         def calculate_band_rt60(filtered_audio: NDArray) -> float:
+            # Helper function to find the index of the nearest value
+            def find_nearest_index(array: NDArray, value: float) -> int:
+                return (np.abs(array - value)).argmin()
+            
             # Convert the signal to decibels
             filtered_db = 10 * np.log10(np.abs(filtered_audio))
         
@@ -110,16 +95,12 @@ class Model:
 
             # Slice the audio data and time axis starting from the maximum dB point
             sliced_db = filtered_db[max_index:]
-            time_axis = self.time_axis()
+            time_axis = self.time_axis
             sliced_time = time_axis[max_index:]
 
             # Determine the -5 dB and -25 dB points
             db_minus_5 = max_db - 5
             db_minus_25 = max_db - 25
-
-            # Helper function to find the index of the nearest value
-            def find_nearest_index(array: NDArray, value: float) -> int:
-                return (np.abs(array - value)).argmin()
 
             idx_minus_5 = find_nearest_index(sliced_db, db_minus_5)
             idx_minus_25 = find_nearest_index(sliced_db, db_minus_25)
@@ -129,14 +110,32 @@ class Model:
             time_minus_25 = sliced_time[idx_minus_25]
             rt20 = time_minus_25 - time_minus_5
             return rt20 * 3
+        
+        # Helper function to apply a bandpass filter dynamically
+        def bandpass_filter(data: NDArray, freq_range: NDArray, sample_rate: int) -> NDArray:
+            nyquist = sample_rate / 2
+            low_cut = freq_range[0] / nyquist
+            high_cut = freq_range[-1] / nyquist
+            b, a = scipy.signal.butter(4, [low_cut, high_cut], btype='band')
+            return scipy.signal.filtfilt(b, a, data)
+        
+        if self._audio is None or self._sample_rate is None:
+            raise ValueError("Audio file must be loaded before calculating RT60.")
+
+        # Retrieve the dynamic frequency ranges
+        low_freq_range, mid_freq_range, high_freq_range = self.get_frequencies()
+
+        # Apply bandpass filters for dynamic frequency ranges
+        low_filtered = bandpass_filter(self._audio, low_freq_range, self._sample_rate)
+        mid_filtered = bandpass_filter(self._audio, mid_freq_range, self._sample_rate)
+        high_filtered = bandpass_filter(self._audio, high_freq_range, self._sample_rate)
 
         # Calculate RT60 for each frequency range
         rt60_low = calculate_band_rt60(low_filtered)
         rt60_mid = calculate_band_rt60(mid_filtered)
         rt60_high = calculate_band_rt60(high_filtered)
 
-        rt60 = [rt60_low, rt60_mid, rt60_high]
-        return tuple(rt60)
+        return (rt60_low, rt60_mid, rt60_high)
 
     def calculate_rt60_difference(self, target_rt60: float = 0.5) -> float:
         low, mid, high = self.calculate_rt60()
@@ -144,9 +143,9 @@ class Model:
         difference = avg_rt60 - target_rt60
         return difference
 
+    @property
     def time_axis(self):
-        timeaxis = np.linspace(0.,self._duration,self._audio.shape[0])
-        return timeaxis
+        return np.linspace(0.,self._duration,self._audio.shape[0])
 
     @property
     def highest_resonance(self) -> float:
@@ -154,19 +153,11 @@ class Model:
             raise ValueError("Audio file must be loaded first.")
         return self._frequencies[np.argmax(self._pxx)]
 
-    def waveform_amplitude(self) -> float:
+    @property
+    def waveform_amplitude(self) -> NDArray:
         return self._audio
 
     @property
-    def filepath(self) -> str:
-        """ Filepath of processed audiofile
-
-        Returns:
-            str: Filepath
-        """    
-
-        return self._filepath
-
     def sample_rate(self) -> int:
         """ Sample rate of the audio file
 
@@ -183,12 +174,3 @@ class Model:
             float: Duration
         """
         return self._duration
-
-    @property
-    def unfiltered_frequency(self) -> NDArray:
-        """ Frequency of the audio file
-
-        Returns:
-            NDArray: Frequencies
-        """
-        return self._frequencies
