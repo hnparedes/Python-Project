@@ -143,6 +143,10 @@ class Model:
         difference = avg_rt60 - target_rt60
         return difference
 
+    def calculate_power(self) -> Tuple[NDArray, NDArray, NDArray]:
+        l, m, h = self.get_frequencies()
+        return (l ** 2, m ** 2, h ** 2)
+
     @property
     def time_axis(self):
         return np.linspace(0.,self._duration,self._audio.shape[0])
