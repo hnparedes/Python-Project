@@ -9,7 +9,7 @@ This project provides a graphical tool to load .wav audio files, convert its for
 
 ## Requirements
 - FFmpeg
-- Python 3.8 or higher  
+- Python 3.10 or higher  
 - Import package libraries listed in `requirements.txt`
 
 ## Installation
