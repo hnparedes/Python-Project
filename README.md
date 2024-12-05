@@ -16,7 +16,7 @@ This project provides a graphical tool to load .wav audio files, convert its for
 1. Create a folder named "PythonProject", then unzip the group project folder and copy it into the folder.
 2. Make sure PythonProject has an .idea folder, a .venu folder (with ffmpeg and ffprobe executables in the scripts folder), and the group project folder
 1. Go to terminal and type ```pip install -r requirements.txt```
-2. type ```cd src/spidam```, then ```python \_\_main\_\_.py```
+2. type ```cd src/spidam```, then ```python __main__.py```
 3. Click open file and select .wav file or any audio file which wil then automatically convert to .wav
 4. Click analyze file so that it displays the reverberation frequency graph of the sound file
 5. Play around with the graph by selecting either intensity graph, waveform graph, cycle RT60 graphs, or combine RT60 graphs
