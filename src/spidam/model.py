@@ -48,7 +48,7 @@ class Model:
         output_filepath: str = os.path.join(directory, filename)
 
         # Load the audiofile and convert into .wav
-        ffmpeg.input(filepath).output(output_filepath, f='wav').run()
+        ffmpeg.input(filepath).output(output_filepath, f='wav').overwrite_output().run()
         self._filepath = output_filepath
         logging.info("Converted to .wav at {output_filepath}")
 
